@@ -1,59 +1,52 @@
 const CustomError = require("../extensions/custom-error");
 
 module.exports = function repeater(str, options) {
-  const toStr = (s) => {
-    if (typeof s === 'string') {
-      return s;
-    } else {
-      return String(s);
-    }
-  }
-
-  let incomingStr = toStr(str);
-  let strAddition = [];
-  let result = [];
-
-  const formStrAddition = () => {
-    strAddition.push(incomingStr);
-    if(options.additionRepeatTimes && typeof options.additionRepeatTimes === 'number') {
-      for(let i = 0; i <options.additionRepeatTimes; i++) {
-        if(options.addition) {
-          strAddition.push(toStr(options.addition));
-        }
-      }
-      if (options.additionSeparator) {
-        return strAddition.join(options.additionSeparator);
+  const repeatTimes = () => options.repeatTimes ? options.repeatTimes : 1;
+  const separator = () => options.separator ? options.separator : '+';
+  const addition = () => {
+    if (options.addition !== undefined) {
+      if(typeof options.addition === 'string') {
+        return options.addition;
       } else {
-        return strAddition.join('');
+        return String(options.addition);
       }
     } else {
-      if(options.addition) {
-        strAddition.push(toStr(options.addition));
-      }
-      return strAddition.join('');
+      return false;
     }
-  };
-
-  if(options) {
-    const strToReplicate = formStrAddition();
-    if(options.repeatTimes && typeof options.repeatTimes === 'number') {
-      for (let i = 0; i < options.repeatTimes; i++) {
-        result.push(strToReplicate);
-      }
-    } else {
-      result.push(strToReplicate);
-    }
-
-    if (options.separator) {
-      return result.join(options.separator);
-    } else {
-      return result.join('+');
-    }
-
-  } else {
-    return incomingStr;
   }
+  const additionSeparator = () => options.additionSeparator ? options.additionSeparator : '|';
+  const additionRepeatTimes = () => options.additionRepeatTimes  ? options.additionRepeatTimes : 1;
+  const sepLength = (separator) => -1 * separator.length;
+
+  let additionStr = '';
+  let result = '';
+
+  for(let i = 0; i < additionRepeatTimes(); i++) {
+    if(addition() === false) {
+       additionStr;
+    } else {
+      additionStr += addition() + additionSeparator();
+    }
+  }
+  additionStr = additionStr.slice(0, sepLength(additionSeparator()));
+
+  for (let i = 0; i < repeatTimes(); i++) {
+    if(repeatTimes() === 1) {
+      return result += str + additionStr;
+    } else {
+      result += str + additionStr;
+    }
+    result+= separator();
+  }
+
+  result = result.slice(0, sepLength(separator()));
+  return result;
 };
+
+
+
+
+
 
 
 
