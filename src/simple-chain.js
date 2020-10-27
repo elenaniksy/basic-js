@@ -20,7 +20,7 @@ const chainMaker = {
   removeLink(position) {
     if(typeof position !== 'number' || !Number.isInteger(position)) {
         this.chainArray = [];
-        throw new CustomError('Wrong position!');
+        throw new Error('Wrong position!');
     }
     this.chainArray.splice(position - 1, 1);
     return this;
